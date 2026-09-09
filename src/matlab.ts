@@ -63,7 +63,7 @@ export async function runCommand(
     const rmcPath = getRunMATLABCommandScriptPath(platform, architecture);
     await fs.chmod(rmcPath, 0o777);
 
-    const rmcArg = `setenv('MW_ORIG_WORKING_FOLDER',cd('${script.pathToCharVec(hs.dir)}')); try; ${hs.command}; catch e; throwAsCaller(e); end`;
+    const rmcArg = `setenv('MW_ORIG_WORKING_FOLDER',cd('${script.pathToCharVec(hs.dir)}')); try, ${hs.command}; catch e, nl=find(e.message==char(10),1); if ~isempty(nl)&&~isempty(strfind(e.message,'${hs.command}.m')), e=MException(e.identifier,'%s',e.message(nl+1:end)); end, throwAsCaller(e); end`;
 
     let execArgs = [rmcArg];
 
